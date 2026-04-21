@@ -1,5 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Revalidate the sitemap every 24 hours (86400 seconds)
+export const revalidate = 86400;
+
 export default async function sitemap() {
   const baseUrl = 'https://vetvisitcost.com';
   
