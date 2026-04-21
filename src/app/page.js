@@ -69,10 +69,9 @@ export default function Home() {
     }
   };
 
-  const handleSuggestionClick = (slug) => {
+  const handleSuggestionClick = (name) => {
+    setProcedure(name);
     setShowSuggestions(false);
-    const queryParams = zipCode ? `?zip=${encodeURIComponent(zipCode)}` : '';
-    router.push(`/cost/${slug}${queryParams}`);
   };
 
   return (
@@ -150,7 +149,7 @@ export default function Home() {
                         <li key={suggestion.slug}>
                           <button
                             type="button"
-                            onClick={() => handleSuggestionClick(suggestion.slug)}
+                            onClick={() => handleSuggestionClick(suggestion.name)}
                             className="w-full text-left px-4 py-3 hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-gray-700 dark:hover:text-brand-300 transition-colors border-b border-gray-100 dark:border-gray-700/50 last:border-0 font-medium text-gray-800 dark:text-gray-200"
                           >
                             {suggestion.name}

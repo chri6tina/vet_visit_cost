@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Search, ChevronRight, AlertCircle, Info } from 'lucide-react';
+import { ArrowLeft, MapPin, Search, ChevronRight, AlertCircle, Info, HeartPulse } from 'lucide-react';
 import Head from 'next/head';
 import { supabase } from '@/lib/supabase';
 export default async function ProcedureCostPage({ params, searchParams }) {
@@ -11,6 +11,33 @@ export default async function ProcedureCostPage({ params, searchParams }) {
   const resolvedSearchParams = await searchParams;
   const zipCode = resolvedSearchParams?.zip || '';
   
+  // ROADBLOCK FIX: Universal Zip Code Redirect via Mapbox Geocoding!
+  if (zipCode) {
+    try {
+      // Look up the exact City and State for any zip code!
+      const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(zipCode)}.json?types=postcode&access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`);
+      const data = await res.json();
+      
+      if (data.features && data.features.length > 0) {
+        // Mapbox returns multiple matches globally, we find the US one or just take the first one
+        const feature = data.features.find(f => f.context?.some(c => c.short_code?.startsWith('US'))) || data.features[0];
+        
+        const placeNode = feature.context?.find(c => c.id.startsWith('place'));
+        const regionNode = feature.context?.find(c => c.id.startsWith('region'));
+        
+        if (placeNode && regionNode && regionNode.short_code) {
+          const urlCity = placeNode.text.toLowerCase().replace(/\s+/g, '-');
+          const urlState = regionNode.short_code.split('-')[1].toLowerCase(); // "US-FL" -> "fl"
+          
+          const { redirect } = await import('next/navigation');
+          redirect(`/cost/${slug}/${urlState}/${urlCity}`);
+        }
+      }
+    } catch (e) {
+      console.log("Geocoding redirect failed bypass mapbox", e);
+    }
+  }
+
   // Fetch real procedure data from Supabase
   const { data: procedure, error } = await supabase
     .from('procedures')
@@ -18,7 +45,7 @@ export default async function ProcedureCostPage({ params, searchParams }) {
     .eq('slug', slug)
     .single();
 
-  // Fetch local low_cost_programs if a zip is provided
+  // Fetch local low_cost_programs if a zip is provided but redirect failed
   let localClinics = [];
   if (zipCode) {
     const { data: clinicsData } = await supabase
