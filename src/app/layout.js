@@ -11,6 +11,9 @@ const inter = Inter({
 export const metadata = {
   title: "VetVisitCost.com | Find Affordable Vet Care",
   description: "Find out what your vet visit should cost, find affordable vets near you, and locate low-cost clinics in your area.",
+  verification: {
+    google: "U28_jDz5VuoQPDUSc7e3BVEPPasYOJKP9_wFTb54tAk",
+  },
 };
 
 export default function RootLayout({ children }) {
