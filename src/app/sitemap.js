@@ -10,12 +10,28 @@ export default async function sitemap() {
   );
 
   const links = [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 }
+    { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
+    { url: `${baseUrl}/vets`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/low-cost-vets`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/pet-insurance`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/bill-check`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
   ];
 
   try {
     const { data: vets } = await supabase.from('vets').select('slug, city, state, updated_at');
     const { data: procedures } = await supabase.from('procedures').select('slug');
+
+    if (procedures && procedures.length > 0) {
+      // Map national Procedure Pages (e.g. /cost/wellness-exam)
+      procedures.forEach(proc => {
+        links.push({
+          url: `${baseUrl}/cost/${proc.slug}`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.9,
+        });
+      });
+    }
 
     if (vets && vets.length > 0) {
       const uniqueCities = new Set();
