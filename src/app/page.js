@@ -102,12 +102,12 @@ export default function Home() {
         <div className="glass-panel rounded-3xl p-4 md:p-6 shadow-xl w-full max-w-3xl mx-auto mb-8 relative z-10">
           
           {/* Pet Type Selector */}
-          <div className="flex gap-2 justify-center mb-6">
+          <div className="flex flex-wrap gap-2 justify-center mb-6">
             {petTypes.map((pt) => (
               <button
                 key={pt.id}
                 onClick={() => setPetType(pt.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 font-medium ${
+                className={`flex-1 sm:flex-none justify-center flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 font-medium ${
                   petType === pt.id 
                     ? 'bg-brand-500 text-white shadow-md transform scale-105' 
                     : 'bg-white/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
@@ -178,7 +178,7 @@ export default function Home() {
 
             <button 
               type="submit"
-              className="bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all shadow-lg hover:shadow-brand-500/30 flex items-center justify-center gap-2"
+              className="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all shadow-lg hover:shadow-brand-500/30 flex items-center justify-center gap-2"
             >
               Search <Search className="w-5 h-5" />
             </button>
